@@ -1,0 +1,15 @@
+[package]
+name = "ruply"
+version = "0.1.0"
+authors = ["jasilven <jasilven@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bencode_rs = { git = "https://github.com/jasilven/bencode_rs", tag = "v0.1.0" }
+anyhow = { version = "1.0"}
+edn = { git = "https://github.com/jasilven/edn.rs", branch = "namespaced-map" }
+rustyline = "6.1.2"
+rustyline-derive = "0.3"
+structopt = "0.3"
