@@ -15,8 +15,10 @@ Ruply detects automatically whether the server is nREPL or pREPL and just works.
 Binary is now in the cargo target directory.
 
 
-## Running
-With nrepl-server running at localhost port 38581:
+## Usage
+With nrepl-server running at port 38581 and prepl-server at 5555.
+
+### Running a repl session
 
 ```
 % ruply -h localhost -p 38581 
@@ -24,7 +26,21 @@ With nrepl-server running at localhost port 38581:
 Connected to nREPL at localhost:38581
 Exit: CTRL+D
 
-user=> 
+user=> (+ 1 1)
+2
+user=>
+CTRL-D
+```
+
+### Executing single-shot snippets
+
+```
+ $ ruply -p 5555 -e "(last (sort (ns-map 'user)))"
+[zipmap #'clojure.core/zipmap]
+
+ $ ruply -p 5555 -e '(apply str (reverse "Hello"))'
+"olleH"
+
 ```
 
 [nREPL]: https://nrepl.org/

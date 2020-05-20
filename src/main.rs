@@ -84,6 +84,32 @@ impl Validator for MyHelper {
     }
 }
 
+fn handle_response(repl: &mut Box<dyn Repl>) -> Result<()> {
+    loop {
+        match repl.recv()? {
+            Response::StdErr(s) => {
+                print!("{}", &s);
+            }
+            Response::StdOut(s) => {
+                print!("{}", &s);
+            }
+            Response::Exception(s) => {
+                println!("{}", &s);
+                break;
+            }
+            Response::Other(_) => {}
+            Response::Done(opt) => {
+                if let Some(s) = opt {
+                    println!("{}", &s);
+                }
+                break;
+            }
+        }
+    }
+
+    Ok(())
+}
+
 fn main_loop(mut repl: Box<dyn Repl>) -> Result<()> {
     let config = Config::builder()
         .history_ignore_space(true)
@@ -130,27 +156,8 @@ fn main_loop(mut repl: Box<dyn Repl>) -> Result<()> {
                 println!("Error: {:?}", err);
             }
         }
-        loop {
-            match repl.recv()? {
-                Response::StdErr(s) => {
-                    print!("{}", &s);
-                }
-                Response::StdOut(s) => {
-                    print!("{}", &s);
-                }
-                Response::Exception(s) => {
-                    println!("{}", &s);
-                    break;
-                }
-                Response::Other(_) => {}
-                Response::Done(opt) => {
-                    if let Some(s) = opt {
-                        println!("{}", &s);
-                    }
-                    break;
-                }
-            }
-        }
+
+        handle_response(&mut repl)?;
     }
 
     Ok(())
@@ -166,21 +173,33 @@ struct Opt {
     /// Repl port
     #[structopt(short)]
     port: usize,
+
+    /// Code snippet for single-shot evaluation
+    #[structopt(short)]
+    eval: Option<String>,
 }
 
 fn main() -> Result<()> {
     let opt = Opt::from_args();
-    let repl = repl::get_repl(&opt.host, opt.port)?;
+    let mut repl = repl::get_repl(&opt.host, opt.port)?;
 
-    println!(
-        "\nConnected to {} at {}:{}",
-        repl.name(),
-        &opt.host,
-        opt.port
-    );
-    println!("Exit: CTRL+D\n");
+    match opt.eval {
+        Some(code) => {
+            repl.send(&code)?;
+            handle_response(&mut repl)?;
+        }
+        None => {
+            println!(
+                "\nConnected to {} at {}:{}",
+                repl.name(),
+                &opt.host,
+                opt.port
+            );
+            println!("Exit: CTRL+D\n");
 
-    main_loop(repl)?;
+            main_loop(repl)?;
+        }
+    }
 
     Ok(())
 }
