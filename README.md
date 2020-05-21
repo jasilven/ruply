@@ -1,6 +1,6 @@
 # Ruply
 A clojure [nREPL] command line client for quick clojure repl sessions.
-Ruply is written in Rust so it compiles down to single compact binary and no java/clojure stuff is needed for running it.
+Ruply is written in Rust so it compiles down to single compact binary (java/clojure stuff not needed for running it).
 
 It works also with pREPL (socket repl included in clojure v1.9->).  
 
