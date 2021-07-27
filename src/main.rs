@@ -127,8 +127,8 @@ fn main_loop(mut repl: Box<dyn Repl>) -> Result<()> {
     };
     let mut rl = Editor::with_config(config);
     rl.set_helper(Some(h));
-    rl.bind_sequence(KeyPress::Down, Cmd::LineDownOrNextHistory);
-    rl.bind_sequence(KeyPress::Up, Cmd::LineUpOrPreviousHistory);
+    rl.bind_sequence(KeyPress::Down, Cmd::LineDownOrNextHistory(1));
+    rl.bind_sequence(KeyPress::Up, Cmd::LineUpOrPreviousHistory(1));
     rl.bind_sequence(KeyPress::Meta('N'), Cmd::HistorySearchForward);
     rl.bind_sequence(KeyPress::Meta('P'), Cmd::HistorySearchBackward);
 
